@@ -4,8 +4,12 @@ import connect from "../services/FhirClient";
 
 const Container = styled.div`
   display: flex;
-  margin: 4rem;
-  flex-direction: column;
+  margin: 2rem;
+  justify-content: center;
+`;
+
+const Box = styled.div`
+  padding: 5px;
 `;
 
 const Green = styled.span`
@@ -19,19 +23,16 @@ const Red = styled.span`
 const PrettyFormat = (props) => <pre>{JSON.stringify(props, null, 2)}</pre>;
 
 function App() {
-  const [client, setClient] = useState();
+  const [client, setClient] = useState({});
   const [error, setError] = useState();
   const [patient, setPatient] = useState();
 
   useEffect(() => {
     async function fetchData() {
       try {
-        console.log("Attempting SMART on FHIR handshake");
         const fhirclient = await connect();
         setClient(fhirclient);
 
-        // Day2 Spoilers below!
-        console.log("Fetching Patient");
         const patient = await fhirclient.request(
           `Patient/${fhirclient.patient.id}`
         );
@@ -46,17 +47,31 @@ function App() {
 
   return (
     <Container>
-      <h1>Hello world.</h1>
-      {client ? (
-        <Green>
-          <div>
-            {/* Day2 Spoilers */}
-            {patient ? <PrettyFormat {...patient} /> : null}
-            <PrettyFormat {...client} />
-          </div>
-        </Green>
-      ) : null}
-      {error ? <Red>{error.toString()}</Red> : null}
+      <Box>
+        <h1>FHIR App Starter</h1>
+        <p>Quick links:</p>
+        <ul>
+          <li>
+            <a href="http://hl7.org/fhir/smart-app-launch/">
+              SMART on FHIR HL7 documentation
+            </a>
+          </li>
+          <li>
+            <a href="https://reactjs.org/tutorial/tutorial.html">
+              React tutorial
+            </a>
+          </li>
+        </ul>
+      </Box>
+      <Box>
+        <input></input>
+      </Box>
+      <Box>
+        <p>
+          SMART on FHIR launch status:{" "}
+          {client.patient ? <Green>Connected</Green> : <Red>Unconnected</Red>}
+        </p>
+      </Box>
     </Container>
   );
 }
