@@ -2,7 +2,7 @@ import FHIR from 'fhirclient'
 
 const client = new FHIR().client({ serverUrl: 'https://r4.smarthealthit.org' })
 
-const PATIENT_ID = process.env.PATIENT_ID || '494743a2-fea5-4827-8f02-c2b91e4a4c9e'
+const PATIENT_ID = process.env.PATIENT_ID || ''
 if (!(PATIENT_ID)) { throw new Error('Must set PATIENT_ID') }
 
 // Read 1: Read the patient

@@ -2,7 +2,7 @@ import FHIR from 'fhirclient'
 
 const client = new FHIR().client({ serverUrl: 'https://r4.smarthealthit.org' })
 
-const GOAL_ID = process.env.GOAL_ID || '661763'
+const GOAL_ID = process.env.GOAL_ID || ''
 if (!(GOAL_ID)) { throw new Error('Must set GOAL_ID') }
 
 const goalPatch = [
