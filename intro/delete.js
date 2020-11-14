@@ -8,4 +8,5 @@ if (!(OBSERVATION_ID)) { throw new Error('Must set OBSERVATION_ID') }
 // Delete: Observation, 10000 is a lot!
 client.delete(`Observation/${OBSERVATION_ID}`)
   .then(r => console.dir(r))
+  .catch(e => console.error(e))
 

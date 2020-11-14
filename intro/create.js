@@ -91,7 +91,9 @@ const stepObservation = {
   effectiveDateTime: new Date().toISOString().slice(0, 10),
   valueInteger: 10000
 }
-client.create(stepObservation).then(r => console.dir(r))
+client.create(stepObservation)
+  .then(r => console.dir(r))
+  .catch(e => console.error(e))
 
 // NOTE: Keep track of the ID of that last observation, we will be using it in
 // future exercises!

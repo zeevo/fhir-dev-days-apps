@@ -1,6 +1,6 @@
 import FHIR from 'fhirclient'
 
-const client = new FHIR().client({ serverUrl: "https://r4.smarthealthit.org" })
+const client = new FHIR().client({ serverUrl: 'https://r4.smarthealthit.org' })
 
 async function capabilityStatement() {
   return await client.request('metadata')
