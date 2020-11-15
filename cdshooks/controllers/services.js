@@ -4,7 +4,7 @@ const router = express.Router()
 
 const prefetch = {
   patient: 'Patient/{{context.patientId}}',
-  lastStep: 'Observation?subject={{context.patientId}}&code=http://loinc.org|41950-7_sort=effectiveDate&_count=1'
+  lastStepBundle: 'Observation?subject={{context.patientId}}&code=http://loinc.org|41950-7&_sort=-date&_count=1'
 }
 
 const stepService = {

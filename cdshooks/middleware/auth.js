@@ -3,8 +3,8 @@ import jwt from 'jsonwebtoken'
 import axios from 'axios'
 import jwkToPem from 'jwk-to-pem'
 
-const allowed = [
-  { iss: 'https://sandbox.cds-hooks.org', sub: '48163c5e-88b5-4cb3-92d3-23b800caa927' }
+const allowedIss = [
+  'https://sandbox.cds-hooks.org'
 ]
 
 export async function authenticateEhr (req, res, next) {
@@ -12,16 +12,16 @@ export async function authenticateEhr (req, res, next) {
   const decodedJwt = jwt.decode(token, { complete: true })
   const asymmetricAlgs = ['ES256', 'ES384', 'ES384', 'RS256', 'RS384', 'RS512']
   const { alg, jku, kid } = decodedJwt.header
-  const { iss, sub } = decodedJwt.payload
-
-  const isAllowed = allowed.find((ehr) => ehr.iss === iss && ehr.sub === sub)
-  if (!isAllowed) { return res.status(401).json('Authentication failed') }
-
-  let pem
-  let verified
+  const { iss } = decodedJwt.payload
 
   console.info(`token: ${token}`)
   console.info(`decodedJwt: ${JSON.stringify(decodedJwt)}`)
+
+  const isAllowed = allowedIss.includes(iss)
+  if (!isAllowed) { return res.status(401).json('Authentication failed, iss {$iss} not allowed') }
+
+  let pem
+  let verified
 
   if (asymmetricAlgs.includes(alg)) {
     if (typeof jku !== 'undefined') {
