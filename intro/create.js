@@ -74,8 +74,8 @@ client.create(validGoal).then(r => console.dir(r))
 
 // Now make an observation, number of we steps today!
 const stepObservation = {
-  resourceType: 'Obervation',
-  status: 'active',
+  resourceType: 'Observation',
+  status: 'final',
   code: {
     coding: [
       {
