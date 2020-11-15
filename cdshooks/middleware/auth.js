@@ -14,8 +14,8 @@ export async function authenticateEhr (req, res, next) {
   const { alg, jku, kid } = decodedJwt.header
   const { iss } = decodedJwt.payload
 
-  console.info(`token: ${token}`)
-  console.info(`decodedJwt: ${JSON.stringify(decodedJwt)}`)
+  // console.info(`token: ${token}`)
+  console.info(`decodedJwt: ${JSON.stringify(decodedJwt, null, 2)}`)
 
   const isAllowed = allowedIss.includes(iss)
   if (!isAllowed) { return res.status(401).json('Authentication failed, iss {$iss} not allowed') }
@@ -36,15 +36,13 @@ export async function authenticateEhr (req, res, next) {
 
     try {
       verified = jwt.verify(token, pem, { algorithms: [alg] })
-      console.info('Verified with PEM')
     } catch (error) {
       console.error('Invalid Token Error', error.message)
       return res.status(401).json('Authentication failed')
     }
   }
 
-  console.info(`Authenticated Token: ${JSON.stringify(verified)}`)
-
+  console.info('Token verified')
   return next()
 }
 

@@ -28,13 +28,13 @@ const cardsBuilder = (patient, lastSteps = {}) => {
       }
     ]
   } else {
-    // We need to record today's steps
+    // We need to record today's steps, there isn't one
     return [
       {
         uuid: uuidv4(),
         summary: 'Oops, no steps recorded for today!',
         indicator: 'warning',
-        detail: `No steps for ${patient.name[0].given}. You can launch the _SMART_app with the link below.`,
+        detail: `No steps for ${patient.name[0].given}. You can launch the _SMART app_ with the link below.`,
         source: {
           label: 'Steptracker 2000'
         },
@@ -54,8 +54,6 @@ const cardsBuilder = (patient, lastSteps = {}) => {
 router.post('/', [authenticateEhr, authenticateClient], async (req, res) => {
   const { body, fhirClient } = req
   const { prefetch } = body
-  console.info('prefetch', prefetch)
-
   const { patient, lastStepBundle } = prefetch
 
   return res.status(200).json({
