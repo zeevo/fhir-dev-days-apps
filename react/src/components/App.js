@@ -22,10 +22,6 @@ const Red = styled.span`
   color: red;
 `;
 
-const GreenP = styled.p`
-  color: green;
-`;
-
 const Flex = styled.div`
   display: flex;
   justify-content: space-between;
@@ -92,24 +88,55 @@ const makeGoal = (
       display: `${patient?.name[0].given[0]} ${patient?.name[0].family}`,
     },
     startDate: new Date(),
-    // outcomeReference: [
-    //   {
-    //     reference: "Observation/example",
-    //     display: "Step count in 24 hr",
-    //   },
-    // ],
   };
 };
 
-const PrettyJson = (props) => <pre>{JSON.stringify(props, null, 2)}</pre>;
+const makeObservation = (
+  patient = {
+    id: "example",
+    name: [{ given: ["Abby"], family: "Smith" }],
+  },
+  stepCount
+) => {
+  return {
+    resourceType: "Observation",
+    text: {
+      status: "generated",
+      div:
+        '<div xmlns="http://www.w3.org/1999/xhtml"><p>Number of steps in 24 hr</p></div>',
+    },
+    status: "final",
+    code: {
+      coding: [
+        {
+          system: "http://loinc.org",
+          code: "41950-7",
+          display: "Number of steps in 24 hour Measured",
+        },
+      ],
+    },
+    subject: {
+      reference: `Patient/${patient.id}`,
+      display: `${patient?.name[0].given[0]} ${patient?.name[0].family}`,
+    },
+    effectivePeriod: {
+      start: "2013-04-02T09:30:10+01:00",
+    },
+    issued: new Date(),
+    valueInteger: stepCount,
+  };
+};
+
+const prettyJson = (props) => JSON.stringify(props, null, 2);
 
 function App() {
   const [client, setClient] = useState({});
-  const { register, getValues, watch, handleSubmit } = useForm();
+  const { register, watch, handleSubmit } = useForm();
   const [patient, setPatient] = useState();
   const [goal, setGoal] = useState();
+  const [observation, setObservation] = useState();
 
-  const { goalDescription } = watch();
+  const { goalDescription, stepCount } = watch();
 
   const createGoal = async (data) => {
     const goal = makeGoal(patient, goalDescription);
@@ -124,6 +151,21 @@ function App() {
     });
 
     setGoal(req);
+  };
+
+  const createObservation = async () => {
+    const observation = makeObservation(patient, stepCount);
+
+    const req = await client.request({
+      url: "Observation",
+      method: "POST",
+      body: JSON.stringify(observation),
+      headers: {
+        "Content-Type": "application/fhir+json",
+      },
+    });
+
+    setObservation(req);
   };
 
   useEffect(() => {
@@ -196,17 +238,69 @@ function App() {
             name="goalDescription"
           ></input>
         </form>
-        <PrettyJson {...makeGoal(patient, goalDescription)} />
-        <button form="goal-form">Submit</button>
+
+        <textarea
+          style={{
+            width: "100%",
+          }}
+          rows={25}
+          value={prettyJson(makeGoal(patient, goalDescription))}
+          disabled
+        />
+        <div>
+          <button form="goal-form">Submit</button>
+        </div>
         {goal ? (
-          <p>
-            <Green>
-              Created a new Goal <PrettyJson {...goal} />
-            </Green>
-          </p>
+          <>
+            <p>Success!</p>
+            <textarea
+              style={{
+                width: "100%",
+                color: "green",
+              }}
+              rows={25}
+              value={prettyJson(goal)}
+              disabled
+            />
+          </>
         ) : null}
       </Box>
-      {/* ) : null} */}
+
+      <Box style={{ flex: "1" }}>
+        <form id="observation-form" onSubmit={handleSubmit(createObservation)}>
+          <label>Create an Observation:</label>
+          <input
+            placeholder="Step Count for today"
+            ref={register}
+            name="stepCount"
+          ></input>
+        </form>
+        <textarea
+          style={{
+            width: "100%",
+          }}
+          rows={25}
+          value={prettyJson(makeObservation(patient, stepCount))}
+          disabled
+        />
+        <div>
+          <button form="observation-form">Submit</button>
+        </div>
+        {observation ? (
+          <>
+            <p>Success!</p>
+            <textarea
+              style={{
+                width: "100%",
+                color: "green",
+              }}
+              rows={25}
+              value={prettyJson(observation)}
+              disabled
+            />
+          </>
+        ) : null}
+      </Box>
     </Container>
   );
 }
