@@ -56,20 +56,7 @@ const makeGoal = (
             },
           ],
         },
-        detailRange: {
-          low: {
-            value: 8000,
-            unit: "count",
-            system: "http://unitsofmeasure.org",
-            code: "{count}",
-          },
-          high: {
-            value: 10000,
-            unit: "count",
-            system: "http://unitsofmeasure.org",
-            code: "{count}",
-          },
-        },
+        detailInter: 10000,
         dueDate: "2020-12-25",
       },
     ],
